@@ -9,7 +9,7 @@ import {
 
 import ProductList from "./ProductList";
 import SearchedProduct from "./SearchedProducts";
-import { Container, Icon, Input } from "native-base";
+import { Icon, Input } from "native-base";
 import Banner from "../Shared/Banner";
 
 const data = require("../../assets/data/products.json");
@@ -45,56 +45,44 @@ const ProductContainer = () => {
   };
 
   return (
-    <Container>
-      <Icon name="search" />
+    <View style={{ flex: 1 }}>
       <Input
         placeholder="Search"
         onFocus={openList}
         onChangeText={(text) => SearchProduct(text)}
+        marginBottom={7}
+        marginTop={12}
       />
       {focus == true ? <Icon onPress={onBlur} name="close" /> : null}
       {focus == true ? (
         <SearchedProduct productsFiltered={productsFiltered} />
       ) : (
         <View style={styles.container}>
-          <View>
-            <Banner />
-          </View>
+          <Banner />
 
-          <View style={styles.listContainer}>
-            <FlatList
-              numColumns={2}
-              //horizontal
-              data={products}
-              renderItem={({ item }) => (
-                <ProductList key={item.id} item={item} />
-              )}
-              keyExtractor={(item) => item.name}
-            />
-          </View>
+          <View style={styles.listContainer}></View>
+          <FlatList
+            numColumns={2}
+            //horizontal
+            data={products}
+            renderItem={({ item }) => <ProductList key={item.id} item={item} />}
+            keyExtractor={(item) => item.name}
+          />
         </View>
       )}
-    </Container>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 100,
-    flexWrap: "wrap",
+    flex: 1,
+    marginTop: 10,
     backgroundColor: "gainsboro",
+    width: "100%",
   },
   listContainer: {
-    marginTop: 200,
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    flexWrap: "wrap",
-    backgroundColor: "gainsboro",
-  },
-  center: {
-    justifyContent: "center",
-    alignItems: "center",
+    marginTop: 15,
   },
 });
 

@@ -11,22 +11,34 @@ import ProductList from "./ProductList";
 import SearchedProduct from "./SearchedProducts";
 import { Icon, Input } from "native-base";
 import Banner from "../Shared/Banner";
+import CategoryFilter from "./CategoreyFilter";
 
 const data = require("../../assets/data/products.json");
+const productscCtegories = require("../../assets/data/categories.json");
 
 const ProductContainer = () => {
   const [products, setProducts] = useState([]);
   const [productsFiltered, setProductsFiltered] = useState([]);
   const [focus, setFocus] = useState([]);
+  const [categories, setCatecories] = useState([]);
+  const [productsCtg, setProductsCtg] = useState([]);
+  const [active, setActive] = useState();
+  const [initailState, setInitailState] = useState([]);
 
   useEffect(() => {
     setProducts(data);
     setProductsFiltered(data);
     setFocus(false);
+    setCatecories(productscCtegories);
+    setActive(-1);
+    setInitailState(data);
     return () => {
       setProducts([]);
       setProductsFiltered([]);
       setFocus();
+      setCatecories([]);
+      setActive();
+      setInitailState();
     };
   }, []);
 
@@ -44,6 +56,19 @@ const ProductContainer = () => {
     setFocus(false);
   };
 
+  //Categories
+  const changeCtg = (ctg) => {
+    {
+      ctg === "all"
+        ? [setProductsCtg(initailState), setActive(true)]
+        : [
+            setProductsCtg(
+              products.filter((i) => i.category.$oid === ctg),
+              setActive(true)
+            ),
+          ];
+    }
+  };
   return (
     <View style={{ flex: 1 }}>
       <Input
@@ -52,6 +77,7 @@ const ProductContainer = () => {
         onChangeText={(text) => SearchProduct(text)}
         marginBottom={7}
         marginTop={12}
+        backgroundColor={"blue.100"}
       />
       {focus == true ? <Icon onPress={onBlur} name="close" /> : null}
       {focus == true ? (
@@ -60,7 +86,14 @@ const ProductContainer = () => {
         <View style={styles.container}>
           <Banner />
 
-          <View style={styles.listContainer}></View>
+          <CategoryFilter
+            categories={categories}
+            categoryFilter={changeCtg}
+            productsCtg={productsCtg}
+            active={active}
+            setActive={setActive}
+          />
+
           <FlatList
             numColumns={2}
             //horizontal

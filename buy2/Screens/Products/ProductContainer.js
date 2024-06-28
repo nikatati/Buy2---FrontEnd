@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Text,
   FlatList,
+  ScrollView,
 } from "react-native";
 
 import ProductList from "./ProductList";
@@ -30,6 +31,7 @@ const ProductContainer = () => {
     setProductsFiltered(data);
     setFocus(false);
     setCatecories(productscCtegories);
+    setProductsCtg(data);
     setActive(-1);
     setInitailState(data);
     return () => {
@@ -75,7 +77,7 @@ const ProductContainer = () => {
         placeholder="Search"
         onFocus={openList}
         onChangeText={(text) => SearchProduct(text)}
-        marginBottom={7}
+        marginBottom={1}
         marginTop={12}
         backgroundColor={"blue.100"}
       />
@@ -83,25 +85,31 @@ const ProductContainer = () => {
       {focus == true ? (
         <SearchedProduct productsFiltered={productsFiltered} />
       ) : (
-        <View style={styles.container}>
-          <Banner />
+        <ScrollView>
+          <View style={styles.container}>
+            <Banner />
 
-          <CategoryFilter
-            categories={categories}
-            categoryFilter={changeCtg}
-            productsCtg={productsCtg}
-            active={active}
-            setActive={setActive}
-          />
+            <CategoryFilter
+              categories={categories}
+              categoryFilter={changeCtg}
+              productsCtg={productsCtg}
+              active={active}
+              setActive={setActive}
+            />
 
-          <FlatList
-            numColumns={2}
-            //horizontal
-            data={products}
-            renderItem={({ item }) => <ProductList key={item.id} item={item} />}
-            keyExtractor={(item) => item.name}
-          />
-        </View>
+            {productsCtg.length > 0 ? (
+              <View>
+                {productsCtg.map((item) => {
+                  return <ProductList key={item._id.$oid} item={item} />;
+                })}
+              </View>
+            ) : (
+              <View style={styles.center}>
+                <Text>No Products found</Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -116,6 +124,10 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     marginTop: 15,
+  },
+  center: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

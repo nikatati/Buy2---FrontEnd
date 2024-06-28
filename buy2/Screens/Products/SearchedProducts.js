@@ -37,7 +37,7 @@ const SearchProducts = (props) => {
     </ScrollView>
   );
 };
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   center: {
     justifyContent: "center",
     alignContent: "center",

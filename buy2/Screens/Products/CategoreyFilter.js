@@ -62,9 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  listContainer: {
-    marginTop: 15,
-  },
+
   badgeContainer: {
     backgroundColor: "red",
     borderRadius: 20,
@@ -81,7 +79,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 21,
   },
   active: {
     backgroundColor: "#03bafc",
@@ -89,7 +87,6 @@ const styles = StyleSheet.create({
   inactive: {
     backgroundColor: "#a0e1eb",
   },
-  scrollView: {},
 });
 
 export default CategoryFilter;

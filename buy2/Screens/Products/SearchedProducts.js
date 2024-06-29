@@ -44,5 +44,3 @@ const styles = StyleSheet.create({
   },
 });
 export default SearchProducts;
-
-//קורס כאשר מכניסים ערך שגוי בתא חיפוש. צריך לתקן!!1

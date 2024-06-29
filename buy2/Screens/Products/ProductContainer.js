@@ -98,7 +98,7 @@ const ProductContainer = () => {
             />
 
             {productsCtg.length > 0 ? (
-              <View>
+              <View style={styles.productCardContainer}>
                 {productsCtg.map((item) => {
                   return <ProductList key={item._id.$oid} item={item} />;
                 })}
@@ -128,6 +128,15 @@ const styles = StyleSheet.create({
   center: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  productCardContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-around", // אפשרות למרווח בין המוצרים
+  },
+  item: {
+    width: "48%", // הגדרת הרוחב של כל פריט כ-50% פחות המרווח
+    margin: "1%", // מרווח בין הפריטים
   },
 });
 

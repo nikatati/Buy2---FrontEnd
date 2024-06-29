@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     width: 150,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: -75, // Adjust this value to move the image down
+    marginBottom: -25, // Adjust this value to move the image down
   },
 });
 

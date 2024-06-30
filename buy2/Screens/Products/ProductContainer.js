@@ -17,7 +17,7 @@ import CategoryFilter from "./CategoreyFilter";
 const data = require("../../assets/data/products.json");
 const productscCtegories = require("../../assets/data/categories.json");
 
-const ProductContainer = () => {
+const ProductContainer = (props) => {
   const [products, setProducts] = useState([]);
   const [productsFiltered, setProductsFiltered] = useState([]);
   const [focus, setFocus] = useState([]);
@@ -83,7 +83,10 @@ const ProductContainer = () => {
       />
       {focus == true ? <Icon onPress={onBlur} name="close" /> : null}
       {focus == true ? (
-        <SearchedProduct productsFiltered={productsFiltered} />
+        <SearchedProduct
+          navigation={props.navigation}
+          productsFiltered={productsFiltered}
+        />
       ) : (
         <ScrollView>
           <View style={styles.container}>
@@ -100,7 +103,13 @@ const ProductContainer = () => {
             {productsCtg.length > 0 ? (
               <View style={styles.productCardContainer}>
                 {productsCtg.map((item) => {
-                  return <ProductList key={item._id.$oid} item={item} />;
+                  return (
+                    <ProductList
+                      navigation={props.navigation}
+                      key={item._id.$oid}
+                      item={item}
+                    />
+                  );
                 })}
               </View>
             ) : (

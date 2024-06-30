@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { HStack, Avatar, VStack, Text } from "native-base";
 
 const SearchProducts = (props) => {
@@ -8,24 +8,27 @@ const SearchProducts = (props) => {
     <ScrollView>
       {productsFiltered.length ? (
         productsFiltered.map((item) => (
-          <HStack
+          <Pressable
             key={item._id.$oid}
-            justifyContent="flex-start"
-            alignItems="flex-start"
+            onPress={() => {
+              props.navigation.navigate("Product Detail", { item: item });
+            }}
           >
-            <Avatar
-              size="60px"
-              source={{
-                uri: item.image
-                  ? item.image
-                  : "https://www.ormistonhospital.co.nz/wp-content/uploads/2016/05/No-Image.jpg",
-              }}
-            />
-            <VStack ml={2}>
-              <Text>{item.name}</Text>
-              <Text note>{item.desription}</Text>
-            </VStack>
-          </HStack>
+            <HStack justifyContent="flex-start" alignItems="flex-start">
+              <Avatar
+                size="60px"
+                source={{
+                  uri: item.image
+                    ? item.image
+                    : "https://www.ormistonhospital.co.nz/wp-content/uploads/2016/05/No-Image.jpg",
+                }}
+              />
+              <VStack ml={2}>
+                <Text>{item.name}</Text>
+                <Text note>{item.desription}</Text>
+              </VStack>
+            </HStack>
+          </Pressable>
         ))
       ) : (
         <View style={styles.center}>
@@ -37,10 +40,13 @@ const SearchProducts = (props) => {
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   center: {
     justifyContent: "center",
     alignContent: "center",
+    flex: 1,
   },
 });
+
 export default SearchProducts;

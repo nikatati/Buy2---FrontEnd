@@ -3,6 +3,10 @@ import { StyleSheet, Text, View, LogBox } from "react-native";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
+//Redux
+import { Provider } from "react-redux";
+import store from "./Redux/store";
+
 //Navigatiors
 import Main from "./Navigators/Main";
 

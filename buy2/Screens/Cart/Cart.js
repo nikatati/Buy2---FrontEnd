@@ -1,17 +1,63 @@
 import React from "react";
-import { Text, View } from "react-native";
+import {
+  Text,
+  View,
+  Dimensions,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  ScrollView,
+} from "react-native";
+import { List } from "native-base";
+import { Icon } from "react-native-vector-icons/FontAwesome";
 
 import { connect } from "react-redux";
+import * as actions from "../../Redux/Actions/cartActions";
+var { height, width } = Dimensions.get("window");
 
 const Cart = (props) => {
   return (
-    <View style={{ flex: 1 }}>
-      {props.cartItems.map((x) => (
-        <Text key={x.product._id.$oid}>
-          {x.product.name} -ID: {x.product._id.$oid}
-        </Text>
-      ))}
-    </View>
+    <ScrollView>
+      {props.cartItems.length ? (
+        <View>
+          <Text style={styles.h1}>Cart</Text>
+          {props.cartItems.map((data) => {
+            return (
+              <List.Item key={Math.random()} style={styles.listitem}>
+                <View style={styles.left}>
+                  <Image
+                    style={styles.image}
+                    resizeMode="contain"
+                    source={{
+                      uri: data.product.image
+                        ? data.product.image
+                        : "https://www.ormistonhospital.co.nz/wp-content/uploads/2016/05/No-Image.jpg",
+                    }}
+                  />
+                </View>
+                <View style={styles.left}>
+                  <Text style={styles.TextProductName}>
+                    {data.product.name}
+                  </Text>
+                </View>
+                <View style={styles.right}>
+                  <Text style={styles.TextProductPrice}>
+                    $ {data.product.price}
+                  </Text>
+                </View>
+              </List.Item>
+            );
+          })}
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <Text>Looks like your cart is empty</Text>
+          <Text>Add products to your cart to get started</Text>
+        </View>
+      )}
+    </ScrollView>
   );
 };
 
@@ -21,5 +67,63 @@ const mapStateToProps = (state) => {
     cartItems: cartItems,
   };
 };
+
+const styles = StyleSheet.create({
+  image: {
+    width: "100%",
+    height: 250,
+    marginBottom: 200,
+  },
+  contentContainer: {
+    marginTop: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  h1: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 40,
+    fontSize: 25,
+    alignSelf: "center",
+    //color: "blue",
+  },
+  TextProductName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  TextProductPrice: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 8,
+    color: "red",
+  },
+  bottomContainer: {
+    flexDirection: "row",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+  },
+  left: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  right: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    flex: 1,
+  },
+  image: {
+    width: width / 2 - 20 - 70,
+    height: width / 2 - 40 - 50,
+    backgroundColor: "transparent",
+  },
+  listitem: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 export default connect(mapStateToProps, null)(Cart);

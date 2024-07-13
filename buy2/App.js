@@ -19,12 +19,14 @@ LogBox.ignoreAllLogs(true);
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <NativeBaseProvider>
-        <Header />
-        <Main />
-      </NativeBaseProvider>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <NativeBaseProvider>
+          <Header />
+          <Main />
+        </NativeBaseProvider>
+      </NavigationContainer>
+    </Provider>
   );
 }
 

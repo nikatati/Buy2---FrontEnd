@@ -6,67 +6,60 @@ import {
   StyleSheet,
   Button,
   TouchableOpacity,
-  FlatList,
-  Image,
-  ScrollView,
 } from "react-native";
-import { List } from "native-base";
-import { Icon } from "react-native-vector-icons/FontAwesome";
+import { Icon } from "native-base";
+import { SwipeListView } from "react-native-swipe-list-view";
 
+import CartItem from "./CartItem";
 import { connect } from "react-redux";
 import * as actions from "../../Redux/Actions/cartActions";
-var { height, width } = Dimensions.get("window");
+var { width } = Dimensions.get("window");
 
 const Cart = (props) => {
   var total = 0;
   props.cartItems.forEach((cart) => {
     return (total += cart.product.price);
   });
+
+  console.log(props.cartItems); // הוסף את זה כדי לבדוק מהו התוכן של cartItems
+
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {props.cartItems.length ? (
-          <View>
-            <Text style={styles.h1}>Cart</Text>
-            {props.cartItems.map((data) => {
-              return (
-                <List.Item key={Math.random()} style={styles.listitem}>
-                  <View style={styles.left}>
-                    <Image
-                      style={styles.image}
-                      resizeMode="contain"
-                      source={{
-                        uri: data.product.image
-                          ? data.product.image
-                          : "https://www.ormistonhospital.co.nz/wp-content/uploads/2016/05/No-Image.jpg",
-                      }}
-                    />
-                  </View>
-                  <View style={styles.left}>
-                    <Text style={styles.TextProductName}>
-                      {data.product.name}
-                    </Text>
-                  </View>
-                  <View style={styles.right}>
-                    <Text style={styles.TextProductPrice}>
-                      $ {data.product.price}
-                    </Text>
-                  </View>
-                </List.Item>
-              );
-            })}
-          </View>
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-              Looks like your cart is empty
-            </Text>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-              Add products to your cart to get started
-            </Text>
-          </View>
-        )}
-      </ScrollView>
+    <>
+      {props.cartItems.length ? (
+        <View>
+          <Text style={styles.h1}>Cart</Text>
+          <SwipeListView
+            data={props.cartItems}
+            renderItem={({ item }) => <CartItem item={item} />}
+            renderHiddenItem={({ item }) => (
+              <View style={styles.hiddenContainer}>
+                <TouchableOpacity
+                  style={styles.hiddenButton}
+                  onPress={() => props.removeFromCart(item)}
+                >
+                  <Icon name="trash" color={"white"} size={30} />
+                </TouchableOpacity>
+              </View>
+            )}
+            disableRightSwipe={true}
+            previewOpenDelay={3000}
+            friction={1000}
+            tension={40}
+            leftOpenValue={75}
+            stopLeftSwipe={75}
+            rightOpenValue={-75}
+          />
+        </View>
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+            Looks like your cart is empty
+          </Text>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+            Add products to your cart to get started
+          </Text>
+        </View>
+      )}
       <View style={styles.bottomContainer}>
         <View style={styles.left}>
           <Text style={styles.priceTotal}>${total}</Text>
@@ -81,7 +74,7 @@ const Cart = (props) => {
           />
         </View>
       </View>
-    </View>
+    </>
   );
 };
 
@@ -95,6 +88,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     clearCart: () => dispatch(actions.clearCart()),
+    removeFromCart: (item) => dispatch(actions.removeFromCart(item)),
   };
 };
 
@@ -166,6 +160,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
+  },
+  hiddenContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    flexDirection: "row",
+  },
+  hiddenButton: {
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    paddingRight: 25,
+    height: 70,
+    width: width / 1.2,
   },
 });
 

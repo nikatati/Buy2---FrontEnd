@@ -6,7 +6,8 @@ var { height, width } = Dimensions.get("window");
 
 const CartItem = (props) => {
   const data = props.item;
-  //const [quatity, setQuantity] = useState(props.item.item.quatity);
+  const [quatity, setQuantity] = useState(data.product.quantity);
+  console.log(data);
 
   return (
     <List key={Math.random()} style={styles.listitem}>
@@ -15,17 +16,17 @@ const CartItem = (props) => {
           style={styles.image}
           resizeMode="contain"
           source={{
-            uri: data.image
-              ? data.image
+            uri: data.product.image
+              ? data.product.image
               : "https://www.ormistonhospital.co.nz/wp-content/uploads/2016/05/No-Image.jpg",
           }}
         />
       </View>
       <View style={styles.left}>
-        <Text style={styles.TextProductName}>{data.name}</Text>
+        <Text style={styles.TextProductName}>{data.product.name}</Text>
       </View>
       <View style={styles.right}>
-        <Text style={styles.TextProductPrice}>$ {data.price}</Text>
+        <Text style={styles.TextProductPrice}>$ {data.product.price}</Text>
       </View>
     </List>
   );

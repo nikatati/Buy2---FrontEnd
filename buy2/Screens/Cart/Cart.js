@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Icon } from "native-base";
+import { AntDesign } from "@expo/vector-icons";
 import { SwipeListView } from "react-native-swipe-list-view";
 
 import CartItem from "./CartItem";
@@ -21,7 +22,7 @@ const Cart = (props) => {
     return (total += cart.product.price);
   });
 
-  console.log(props.cartItems); // הוסף את זה כדי לבדוק מהו התוכן של cartItems
+  //console.log(props.cartItems); // הוסף את זה כדי לבדוק מהו התוכן של cartItems
 
   return (
     <>
@@ -31,13 +32,14 @@ const Cart = (props) => {
           <SwipeListView
             data={props.cartItems}
             renderItem={({ item }) => <CartItem item={item} />}
-            renderHiddenItem={({ item }) => (
+            renderHidden
+            Item={({ item }) => (
               <View style={styles.hiddenContainer}>
                 <TouchableOpacity
                   style={styles.hiddenButton}
                   onPress={() => props.removeFromCart(item)}
                 >
-                  <Icon name="trash" color={"white"} size={30} />
+                  <AntDesign name="delete" size={30} color="black" />
                 </TouchableOpacity>
               </View>
             )}
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     paddingBottom: 100, // ensures content doesn't overlap with bottom container
+    //backgroundColor: "red",
   },
   image: {
     width: width / 2 - 20 - 70,
@@ -160,14 +163,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
+    //backgroundColor: "red",
   },
   hiddenContainer: {
     flex: 1,
     justifyContent: "flex-end",
     flexDirection: "row",
+    //backgroundColor: "red",
   },
   hiddenButton: {
-    backgroundColor: "red",
+    //backgroundColor: "red",
     justifyContent: "center",
     alignItems: "flex-end",
     paddingRight: 25,

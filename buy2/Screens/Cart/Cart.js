@@ -32,8 +32,7 @@ const Cart = (props) => {
           <SwipeListView
             data={props.cartItems}
             renderItem={({ item }) => <CartItem item={item} />}
-            renderHidden
-            Item={({ item }) => (
+            renderHiddenItem={({ item }) => (
               <View style={styles.hiddenContainer}>
                 <TouchableOpacity
                   style={styles.hiddenButton}

@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     paddingBottom: 100, // ensures content doesn't overlap with bottom container
   },
   image: {
-    width: width / 2 - 20 - 70,
-    height: width / 2 - 40 - 50,
+    width: width / 2 - 20 - 80,
+    height: width / 2 - 40 - 110,
     backgroundColor: "transparent",
   },
   contentContainer: {

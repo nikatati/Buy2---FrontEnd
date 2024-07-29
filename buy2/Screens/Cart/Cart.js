@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -7,7 +7,6 @@ import {
   Button,
   TouchableOpacity,
 } from "react-native";
-import { Icon } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { SwipeListView } from "react-native-swipe-list-view";
 
@@ -17,12 +16,21 @@ import * as actions from "../../Redux/Actions/cartActions";
 var { width } = Dimensions.get("window");
 
 const Cart = (props) => {
+  const [swipedRows, setSwipedRows] = useState([]);
+
   var total = 0;
   props.cartItems.forEach((cart) => {
     return (total += cart.product.price);
   });
 
-  //console.log(props.cartItems); // הוסף את זה כדי לבדוק מהו התוכן של cartItems
+  const handleSwipeValueChange = (swipeData) => {
+    const { key, value } = swipeData;
+    if (value < -90 && !swipedRows.includes(key)) {
+      setSwipedRows([...swipedRows, key]);
+    } else if (value > -75 && swipedRows.includes(key)) {
+      setSwipedRows(swipedRows.filter((rowKey) => rowKey !== key));
+    }
+  };
 
   return (
     <>
@@ -34,12 +42,14 @@ const Cart = (props) => {
             renderItem={({ item }) => <CartItem item={item} />}
             renderHiddenItem={({ item }) => (
               <View style={styles.hiddenContainer}>
-                <TouchableOpacity
-                  style={styles.hiddenButton}
-                  onPress={() => props.removeFromCart(item)}
-                >
-                  <AntDesign name="delete" size={30} color="black" />
-                </TouchableOpacity>
+                {swipedRows.includes(item.key) && (
+                  <TouchableOpacity
+                    style={styles.hiddenButton}
+                    onPress={() => props.removeFromCart(item)}
+                  >
+                    <AntDesign name="delete" size={30} color="black" />
+                  </TouchableOpacity>
+                )}
               </View>
             )}
             disableRightSwipe={true}
@@ -49,6 +59,7 @@ const Cart = (props) => {
             leftOpenValue={75}
             stopLeftSwipe={75}
             rightOpenValue={-75}
+            onSwipeValueChange={handleSwipeValueChange}
           />
         </View>
       ) : (

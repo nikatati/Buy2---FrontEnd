@@ -1,11 +1,35 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+  Image,
+  Button,
+} from "react-native";
 import { connect } from "react-redux";
 import * as actions from "../../../Redux/Actions/cartActions";
 
-var { height } = Dimensions.get("window");
+var { width, height } = Dimensions.get("window");
+
+const ListItem = ({ onPress, children }) => {
+  return (
+    <TouchableOpacity style={styles.listItem} onPress={onPress}>
+      <View style={styles.itemContent}>{children}</View>
+    </TouchableOpacity>
+  );
+};
 
 const Confirm = (props) => {
+  const confirmOrder = () => {
+    setTimeout(() => {
+      props.clearCart();
+      props.navigation.navigate("Cart");
+    }, 500);
+  };
+
   const confrim = props.route.params;
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -13,29 +37,59 @@ const Confirm = (props) => {
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>Confirm order</Text>
         {props.route.params ? (
           <View style={{ borderWidth: 2, borderColor: "orange" }}>
-            <Text style={styles.shipping}>Shipping To</Text>
+            <Text style={styles.title}>Shipping To</Text>
             <View style={{ padding: 22 }}>
               <Text style={{ fontSize: 16 }}>
-                Address:{confrim.order.order.shippingAddress1}
+                Address: {confrim.order.order.shippingAddress1}
               </Text>
               <Text style={{ fontSize: 16 }}>
-                Address2:{confrim.order.order.shippingAddress2}
+                Address2: {confrim.order.order.shippingAddress2}
               </Text>
               <Text style={{ fontSize: 16 }}>
-                City:{confrim.order.order.city}
+                City: {confrim.order.order.city}
               </Text>
               <Text style={{ fontSize: 16 }}>
-                Zip Code:{confrim.order.order.zip}
+                Zip Code: {confrim.order.order.zip}
               </Text>
               <Text style={{ fontSize: 16 }}>
-                Country:{confrim.order.order.country}
+                Country: {confrim.order.order.country}
               </Text>
             </View>
+            <Text style={styles.title}>Items:</Text>
+            {confrim.order.order.orderItems.map((x) => {
+              return (
+                <ListItem key={x.product.name}>
+                  <View style={styles.thumbnailContainer}>
+                    <Image
+                      source={{ uri: x.product.image }}
+                      style={styles.thumbnail}
+                    />
+                  </View>
+                  <View style={styles.body}>
+                    <View style={styles.left}>
+                      <Text>{x.product.name}</Text>
+                    </View>
+                    <View style={styles.right}>
+                      <Text> ${x.product.price}</Text>
+                    </View>
+                  </View>
+                </ListItem>
+              );
+            })}
           </View>
         ) : null}
+        <View style={{ alignItems: "center", margin: 20 }}>
+          <Button title={"Place order"} onPress={confirmOrder} />
+        </View>
       </View>
     </ScrollView>
   );
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearCart: () => dispatch(actions.clearCart()),
+  };
 };
 
 const styles = StyleSheet.create({
@@ -50,7 +104,7 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
   },
-  shipping: {
+  title: {
     alignSelf: "center",
     margin: 8,
     fontSize: 20,
@@ -92,7 +146,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    flex: 1,
   },
   price: {
     fontSize: 24,
@@ -100,18 +153,16 @@ const styles = StyleSheet.create({
     color: "red",
   },
   body: {
-    flex: 1,
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    padding: 10,
-  },
-  title: {
-    fontSize: 30,
+    margin: 10,
+    flex: 1,
   },
   content: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#fff", // תוכל לשנות את צבע הרקע לפי הצורך שלך
+    backgroundColor: "#fff",
   },
   listItem: {
     padding: 15,
@@ -121,9 +172,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    width: width / 1.2,
   },
   itemContent: {
-    // עיצוב נוסף לפי הצורך
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
   },
   itemText: {
     fontSize: 18,
@@ -149,13 +203,21 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   radioCircleSelected: {
-    backgroundColor: "#007bff", // צבע של הבחירה (כחול לדוגמה)
+    backgroundColor: "#007bff",
   },
   titleContainer: {
     justifyContent: "center",
     alignItems: "center",
     margin: 8,
   },
+  thumbnailContainer: {
+    marginRight: 10,
+  },
+  thumbnail: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
 });
 
-export default Confirm;
+export default connect(null, mapDispatchToProps)(Confirm);

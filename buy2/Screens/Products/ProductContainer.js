@@ -8,13 +8,16 @@ import {
   ScrollView,
 } from "react-native";
 
+import baseURL from "../../assets/common/baseUrl";
+import axios from "axios";
+
 import ProductList from "./ProductList";
 import SearchedProduct from "./SearchedProducts";
 import { Icon, Input } from "native-base";
 import Banner from "../Shared/Banner";
 import CategoryFilter from "./CategoreyFilter";
 
-const data = require("../../assets/data/products.json");
+//const data = require("../../assets/data/products.json");
 const productscCtegories = require("../../assets/data/categories.json");
 
 const ProductContainer = (props) => {
@@ -27,13 +30,34 @@ const ProductContainer = (props) => {
   const [initailState, setInitailState] = useState([]);
 
   useEffect(() => {
-    setProducts(data);
-    setProductsFiltered(data);
     setFocus(false);
-    setCatecories(productscCtegories);
-    setProductsCtg(data);
+    //setCatecories(productscCtegories);
     setActive(-1);
-    setInitailState(data);
+
+    //Products
+    axios
+      .get(`${baseURL}products`)
+      .then((res) => {
+        //console.log("Response from server:", res.data);
+        setProducts(res.data);
+        setProductsFiltered(res.data);
+        setProductsCtg(res.data);
+        setInitailState(res.data);
+      })
+      .catch((error) => {
+        console.log("Error fetching products:", error);
+      });
+
+    //Categoties
+    axios
+      .get(`${baseURL}categories`)
+      .then((res) => {
+        setCatecories(res.data);
+      })
+      .catch((error) => {
+        console.log("Api call error:", error);
+      });
+
     return () => {
       setProducts([]);
       setProductsFiltered([]);
@@ -43,6 +67,40 @@ const ProductContainer = (props) => {
       setInitailState();
     };
   }, []);
+
+  // useEffect(() => {
+  //   setFocus(false);
+  //   setCatecories(productscCtegories);
+  //   setActive(-1);
+
+  //   // שימוש ב-fetch במקום axios
+  //   fetch(`http://10.100.102.8:3000/api/v1/products`)
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       console.log(response.json());
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       setProducts(data);
+  //       setProductsFiltered(data);
+  //       setProductsCtg(data);
+  //       setInitailState(data);
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error fetching products:", error);
+  //     });
+
+  //   return () => {
+  //     setProducts([]);
+  //     setProductsFiltered([]);
+  //     setFocus();
+  //     setCatecories([]);
+  //     setActive();
+  //     setInitailState();
+  //   };
+  // }, []);
 
   const SearchProduct = (text) => {
     setProductsFiltered(
@@ -65,7 +123,7 @@ const ProductContainer = (props) => {
         ? [setProductsCtg(initailState), setActive(true)]
         : [
             setProductsCtg(
-              products.filter((i) => i.category.$oid === ctg),
+              products.filter((i) => i.category._id === ctg),
               setActive(true)
             ),
           ];
@@ -106,7 +164,7 @@ const ProductContainer = (props) => {
                   return (
                     <ProductList
                       navigation={props.navigation}
-                      key={item._id.$oid}
+                      key={item._id}
                       item={item}
                     />
                   );

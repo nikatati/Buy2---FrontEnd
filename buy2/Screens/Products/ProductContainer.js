@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   FlatList,
   ScrollView,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import baseURL from "../../assets/common/baseUrl";
 import axios from "axios";
@@ -28,45 +29,49 @@ const ProductContainer = (props) => {
   const [productsCtg, setProductsCtg] = useState([]);
   const [active, setActive] = useState();
   const [initailState, setInitailState] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setFocus(false);
-    //setCatecories(productscCtegories);
-    setActive(-1);
+  useFocusEffect(
+    useCallback(() => {
+      setFocus(false);
+      setActive(-1);
+      //setCatecories(productscCtegories);
 
-    //Products
-    axios
-      .get(`${baseURL}products`)
-      .then((res) => {
-        //console.log("Response from server:", res.data);
-        setProducts(res.data);
-        setProductsFiltered(res.data);
-        setProductsCtg(res.data);
-        setInitailState(res.data);
-      })
-      .catch((error) => {
-        console.log("Error fetching products:", error);
-      });
+      //Products
+      axios
+        .get(`${baseURL}products`)
+        .then((res) => {
+          //console.log("Response from server:", res.data);
+          setProducts(res.data);
+          setProductsFiltered(res.data);
+          setProductsCtg(res.data);
+          setInitailState(res.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log("Error fetching products:", error);
+        });
 
-    //Categoties
-    axios
-      .get(`${baseURL}categories`)
-      .then((res) => {
-        setCatecories(res.data);
-      })
-      .catch((error) => {
-        console.log("Api call error:", error);
-      });
+      //Categoties
+      axios
+        .get(`${baseURL}categories`)
+        .then((res) => {
+          setCatecories(res.data);
+        })
+        .catch((error) => {
+          console.log("Api call error:", error);
+        });
 
-    return () => {
-      setProducts([]);
-      setProductsFiltered([]);
-      setFocus();
-      setCatecories([]);
-      setActive();
-      setInitailState();
-    };
-  }, []);
+      return () => {
+        setProducts([]);
+        setProductsFiltered([]);
+        setFocus();
+        setCatecories([]);
+        setActive();
+        setInitailState();
+      };
+    }, [])
+  );
 
   // useEffect(() => {
   //   setFocus(false);
@@ -130,55 +135,70 @@ const ProductContainer = (props) => {
     }
   };
   return (
-    <View style={{ flex: 1 }}>
-      <Input
-        placeholder="Search"
-        onFocus={openList}
-        onChangeText={(text) => SearchProduct(text)}
-        marginBottom={1}
-        marginTop={12}
-        backgroundColor={"blue.100"}
-      />
-      {focus == true ? <Icon onPress={onBlur} name="close" /> : null}
-      {focus == true ? (
-        <SearchedProduct
-          navigation={props.navigation}
-          productsFiltered={productsFiltered}
-        />
-      ) : (
-        <ScrollView>
-          <View style={styles.container}>
-            <Banner />
-
-            <CategoryFilter
-              categories={categories}
-              categoryFilter={changeCtg}
-              productsCtg={productsCtg}
-              active={active}
-              setActive={setActive}
+    <>
+      {loading == false ? (
+        <View style={{ flex: 1 }}>
+          <Input
+            placeholder="Search"
+            onFocus={openList}
+            onChangeText={(text) => SearchProduct(text)}
+            marginBottom={1}
+            marginTop={12}
+            backgroundColor={"blue.100"}
+          />
+          {focus == true ? <Icon onPress={onBlur} name="close" /> : null}
+          {focus == true ? (
+            <SearchedProduct
+              navigation={props.navigation}
+              productsFiltered={productsFiltered}
             />
+          ) : (
+            <ScrollView>
+              <View style={styles.container}>
+                <Banner />
 
-            {productsCtg.length > 0 ? (
-              <View style={styles.productCardContainer}>
-                {productsCtg.map((item) => {
-                  return (
-                    <ProductList
-                      navigation={props.navigation}
-                      key={item._id}
-                      item={item}
-                    />
-                  );
-                })}
+                <CategoryFilter
+                  categories={categories}
+                  categoryFilter={changeCtg}
+                  productsCtg={productsCtg}
+                  active={active}
+                  setActive={setActive}
+                />
+
+                {productsCtg.length > 0 ? (
+                  <View style={styles.productCardContainer}>
+                    {productsCtg.map((item) => {
+                      return (
+                        <ProductList
+                          navigation={props.navigation}
+                          key={item._id}
+                          item={item}
+                        />
+                      );
+                    })}
+                  </View>
+                ) : (
+                  <View style={styles.center}>
+                    <Text>No Products found</Text>
+                  </View>
+                )}
               </View>
-            ) : (
-              <View style={styles.center}>
-                <Text>No Products found</Text>
-              </View>
-            )}
-          </View>
-        </ScrollView>
+            </ScrollView>
+          )}
+        </View>
+      ) : (
+        //Loading
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "#f2f2f2",
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="red" />
+        </View>
       )}
-    </View>
+    </>
   );
 };
 

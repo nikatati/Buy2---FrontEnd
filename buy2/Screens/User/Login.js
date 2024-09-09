@@ -2,10 +2,24 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import FromContainer from "../Shared/Form/FormContainer";
 import Input from "../Shared/Form/Input";
+import Error from "../Shared/Error";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = () => {
+    const user = {
+      email,
+      password,
+    };
+    if (email === "" || password === "") {
+      setError("Please fill in your credtials");
+    } else {
+      console.log("success");
+    }
+  };
 
   return (
     <FromContainer title={"Login"}>
@@ -22,10 +36,11 @@ const Login = (props) => {
         id={"Password"}
         secureTextEntry={true}
         value={password}
-        onChangeText={(text) => setEmail(text)}
+        onChangeText={(text) => setPassword(text)}
       />
       <View style={styles.buttonGroup}>
-        <Button title="Login" />
+        {error ? <Error message={error} /> : null}
+        <Button title="Login" onPress={() => handleSubmit()} />
       </View>
       <View style={[{ marginTop: 40 }, styles.buttonGroup]}>
         <Text style={styles.middleText}>Don't have an account yet?</Text>

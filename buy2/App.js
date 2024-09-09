@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, LogBox } from "react-native";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 //Redux
 import { Provider } from "react-redux";
@@ -24,6 +25,7 @@ export default function App() {
         <NativeBaseProvider>
           <Header />
           <Main />
+          <Toast />
         </NativeBaseProvider>
       </NavigationContainer>
     </Provider>

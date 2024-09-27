@@ -35,6 +35,9 @@ const SingleProduct = (props) => {
           <Text style={styles.h1}>{item.name}</Text>
           <Text style={styles.contentText}>{item.brand}</Text>
         </View>
+        <View>
+          <Text>{item.description}</Text>
+        </View>
         {/*TODO: Description*/}
       </ScrollView>
 

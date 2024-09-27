@@ -9,7 +9,7 @@ const SearchProducts = (props) => {
       {productsFiltered.length ? (
         productsFiltered.map((item) => (
           <Pressable
-            key={item._id.$oid}
+            key={item._id}
             onPress={() => {
               props.navigation.navigate("Product Detail", { item: item });
             }}

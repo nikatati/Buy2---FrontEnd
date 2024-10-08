@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Text,
   View,
@@ -9,14 +9,50 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { SwipeListView } from "react-native-swipe-list-view";
+import axios from "axios";
+import baseURL from "../../assets/common/baseUrl";
+
+//import { Icon } from "native-base";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 import CartItem from "./CartItem";
 import { connect } from "react-redux";
 import * as actions from "../../Redux/Actions/cartActions";
+import AuthGlobal from "../../Context/store/AuthGlobal";
 var { width } = Dimensions.get("window");
 
 const Cart = (props) => {
+  const context = useContext(AuthGlobal);
   const [swipedRows, setSwipedRows] = useState([]);
+  const [productUpdate, setProductUpdate] = useState();
+  const [totalPrice, setTotalPrice] = useState();
+  useEffect(() => {
+    getProducts();
+    return () => {
+      setProductUpdate();
+      setTotalPrice();
+    };
+  }, [props]);
+
+  const getProducts = () => {
+    var products = [];
+    props.cartItems.forEach((cart) => {
+      axios
+        .get(`${baseURL}products/${cart.product}`)
+        .then((data) => {
+          products.push(data.data);
+          setProductUpdate(products);
+          var total = 0;
+          products.forEach((product) => {
+            const price = (total += product.price);
+            setTotalPrice(price);
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    });
+  };
 
   var total = 0;
   props.cartItems.forEach((cart) => {
@@ -34,22 +70,22 @@ const Cart = (props) => {
 
   return (
     <>
-      {props.cartItems.length ? (
+      {productUpdate ? (
         <View>
-          <Text style={styles.h1}>Cart</Text>
+          <Text style={{ alignSelf: "center" }}>Cart</Text>
           <SwipeListView
-            data={props.cartItems}
-            renderItem={({ item }) => <CartItem item={item} />}
-            renderHiddenItem={({ item }) => (
+            data={productUpdate}
+            renderItem={(data) => <CartItem item={data} />}
+            renderHiddenItem={(data) => (
               <View style={styles.hiddenContainer}>
-                {swipedRows.includes(item.key) && (
-                  <TouchableOpacity
-                    style={styles.hiddenButton}
-                    onPress={() => props.removeFromCart(item)}
-                  >
-                    <AntDesign name="delete" size={30} color="black" />
-                  </TouchableOpacity>
-                )}
+                <TouchableOpacity
+                  style={styles.hiddenButton}
+                  onPress={() => {
+                    props.removeFromCart(data.item);
+                  }}
+                >
+                  <Icon name="trash" color={"red"} size={20} />
+                </TouchableOpacity>
               </View>
             )}
             disableRightSwipe={true}
@@ -59,33 +95,35 @@ const Cart = (props) => {
             leftOpenValue={75}
             stopLeftSwipe={75}
             rightOpenValue={-75}
-            onSwipeValueChange={handleSwipeValueChange}
           />
+          <View style={styles.bottomContainer}>
+            <View style={styles.left}>
+              <Text style={styles.price}>$ {totalPrice}</Text>
+            </View>
+            <View style={styles.right}>
+              <Button title="Clear" onPress={() => props.clearCart()} />
+            </View>
+            <View style={styles.right}>
+              {context.stateUser.isAuthenticated ? (
+                <Button
+                  title="Checkout"
+                  onPress={() => props.navigation.navigate("Checkout")}
+                />
+              ) : (
+                <Button
+                  title="Login"
+                  onPress={() => props.navigation.navigate("Login")}
+                />
+              )}
+            </View>
+          </View>
         </View>
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            Looks like your cart is empty
-          </Text>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            Add products to your cart to get started
-          </Text>
+          <Text>Looks like your cart is empty</Text>
+          <Text>Add products to your cart to get started</Text>
         </View>
       )}
-      <View style={styles.bottomContainer}>
-        <View style={styles.left}>
-          <Text style={styles.priceTotal}>${total}</Text>
-        </View>
-        <View style={styles.right}>
-          <Button title="Clear" onPress={() => props.clearCart()} />
-        </View>
-        <View style={styles.right}>
-          <Button
-            title="Checkout"
-            onPress={() => props.navigation.navigate("Checkout")}
-          />
-        </View>
-      </View>
     </>
   );
 };

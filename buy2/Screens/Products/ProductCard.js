@@ -39,7 +39,7 @@ const ProductCard = (props) => {
             title={"Add"}
             color={"green"}
             onPress={() => {
-              props.addItemToCart(props),
+              props.addItemToCart(props.id),
                 Toast.show({
                   topOffset: 60,
                   type: "success",

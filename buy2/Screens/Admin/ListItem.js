@@ -1,4 +1,3 @@
-import { Container } from "native-base";
 import React, { useState } from "react";
 import {
   View,
@@ -12,6 +11,7 @@ import {
   Modal,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+//import { Icon } from "native-base";
 
 var { width } = Dimensions.get("window");
 
@@ -53,7 +53,10 @@ const ListItem = (props) => {
             />
             <Button
               title="Delete"
-              //delete
+              onPress={() => {
+                console.log("Product ID in ListItem:", props.id);
+                props.delete(props.id), setModalVisible(false);
+              }}
             />
           </View>
         </View>

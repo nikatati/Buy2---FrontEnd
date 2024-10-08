@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,10 @@ import {
 import { connect } from "react-redux";
 import * as actions from "../../../Redux/Actions/cartActions";
 
+import Toast from "react-native-toast-message";
+import axios from "axios";
+import baseURL from "../../../assets/common/baseUrl";
+
 var { width, height } = Dimensions.get("window");
 
 const ListItem = ({ onPress, children }) => {
@@ -23,14 +27,66 @@ const ListItem = ({ onPress, children }) => {
 };
 
 const Confirm = (props) => {
-  const confirmOrder = () => {
-    setTimeout(() => {
-      props.clearCart();
-      props.navigation.navigate("Cart");
-    }, 500);
+  const finalOrder = props.route.params;
+
+  const [productUpdate, setProductUpdate] = useState();
+  useEffect(() => {
+    if (finalOrder) {
+      getProducts(finalOrder);
+    }
+    return () => {
+      setProductUpdate();
+    };
+  }, [props]);
+
+  // Add this
+  const getProducts = (x) => {
+    const order = x.order.order;
+    var products = [];
+    if (order) {
+      order.orderItems.forEach((cart) => {
+        axios
+          .get(`${baseURL}products/${cart.product}`)
+          .then((data) => {
+            products.push(data.data);
+            setProductUpdate(products);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
+    }
   };
 
-  const confrim = props.route.params;
+  const confirmOrder = () => {
+    const order = finalOrder.order.order;
+
+    axios
+      .post(`${baseURL}orders`, order)
+      .then((res) => {
+        if (res.status == 200 || res.status == 201) {
+          Toast.show({
+            topOffset: 60,
+            type: "success",
+            text1: "Order comlited",
+            text2: "",
+          });
+          setTimeout(() => {
+            props.clearCart();
+            props.navigation.navigate("Cart");
+          }, 500);
+        }
+      })
+      .catch((error) => {
+        Toast.show({
+          topOffset: 60,
+          type: "error",
+          text1: "something went wrong",
+          text2: "Please try again",
+        });
+      });
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.titleContainer}>
@@ -40,23 +96,23 @@ const Confirm = (props) => {
             <Text style={styles.title}>Shipping To</Text>
             <View style={{ padding: 22 }}>
               <Text style={{ fontSize: 16 }}>
-                Address: {confrim.order.order.shippingAddress1}
+                Address: {finalOrder.order.order.shippingAddress1}
               </Text>
               <Text style={{ fontSize: 16 }}>
-                Address2: {confrim.order.order.shippingAddress2}
+                Address2: {finalOrder.order.order.shippingAddress2}
               </Text>
               <Text style={{ fontSize: 16 }}>
-                City: {confrim.order.order.city}
+                City: {finalOrder.order.order.city}
               </Text>
               <Text style={{ fontSize: 16 }}>
-                Zip Code: {confrim.order.order.zip}
+                Zip Code: {finalOrder.order.order.zip}
               </Text>
               <Text style={{ fontSize: 16 }}>
-                Country: {confrim.order.order.country}
+                Country: {finalOrder.order.order.country}
               </Text>
             </View>
             <Text style={styles.title}>Items:</Text>
-            {confrim.order.order.orderItems.map((x) => {
+            {finalOrder.order.order.orderItems.map((x) => {
               return (
                 <ListItem key={x.product.name}>
                   <View style={styles.thumbnailContainer}>

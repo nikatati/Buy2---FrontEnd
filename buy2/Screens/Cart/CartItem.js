@@ -5,8 +5,8 @@ import Cart from "./Cart";
 var { height, width } = Dimensions.get("window");
 
 const CartItem = (props) => {
-  const data = props.item;
-  const [quatity, setQuantity] = useState(data.product.quantity);
+  const data = props.item.item;
+  //const [quatity, setQuantity] = useState(data.product.quantity);
   console.log(data);
 
   return (
@@ -16,17 +16,17 @@ const CartItem = (props) => {
           style={styles.image}
           resizeMode="contain"
           source={{
-            uri: data.product.image
-              ? data.product.image
+            uri: data.image
+              ? data.image
               : "https://www.ormistonhospital.co.nz/wp-content/uploads/2016/05/No-Image.jpg",
           }}
         />
       </View>
       <View style={styles.left}>
-        <Text style={styles.TextProductName}>{data.product.name}</Text>
+        <Text style={styles.TextProductName}>{data.name}</Text>
       </View>
       <View style={styles.right}>
-        <Text style={styles.TextProductPrice}>$ {data.product.price}</Text>
+        <Text style={styles.TextProductPrice}>$ {data.price}</Text>
       </View>
     </List>
   );
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     flex: 1,
+    marginBottom: 7,
   },
   listitem: {
     alignItems: "center",

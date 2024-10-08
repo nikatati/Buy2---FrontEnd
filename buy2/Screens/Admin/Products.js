@@ -15,7 +15,6 @@ import ListItem from "./ListItem";
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
 import AsyncStorage from "@react-native-community/async-storage";
-import { Container } from "native-base";
 
 var { height, width } = Dimensions.get("window");
 
@@ -77,8 +76,45 @@ const Products = (props) => {
     );
   };
 
+  const deleteProduct = (id) => {
+    console.log("Token:", token);
+    console.log("Delete URL:", `${baseURL}products/${id}`);
+    console.log("ID to delete:", id);
+
+    axios
+      .delete(`${baseURL}product/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        //console.log("Product deleted successfully:", res.data);
+        const products = productFilter.filter((item) => item.id !== id);
+        setProductFilter(products);
+        //setProductList(products);
+      })
+      .catch((error) => {
+        console.log("Delete error:", error.response?.data || error.message);
+      });
+  };
+
   return (
     <View>
+      <View style={styles.buttonWrapper}>
+        <Button
+          title="Orders"
+          color="#4682B4"
+          onPress={() => props.navigation.navigate("Orders")}
+        ></Button>
+        <Button
+          title="Products"
+          color="#4682B4"
+          onPress={() => props.navigation.navigate("ProductForm")}
+        ></Button>
+        <Button
+          title="Categories"
+          color="#4682B4"
+          onPress={() => props.navigation.navigate("Categories")}
+        ></Button>
+      </View>
       {/* Search bar */}
       <View style={styles.searchBarContainer}>
         <TextInput
@@ -97,7 +133,12 @@ const Products = (props) => {
           data={productFilter}
           ListHeaderComponent={ListHeader}
           renderItem={({ item, index }) => (
-            <ListItem {...item} navigation={props.navigation} index={index} />
+            <ListItem
+              {...item}
+              navigation={props.navigation}
+              index={index}
+              delete={deleteProduct}
+            />
           )}
           keyExtractor={(item) => item.id.toString()}
         />
@@ -139,6 +180,14 @@ const styles = StyleSheet.create({
     height: height / 2,
     alignItems: "center",
     justifyContent: "center",
+  },
+  buttonWrapper: {
+    flexDirection: "row", // Arrange buttons horizontally
+    marginHorizontal: 10, // Horizontal spacing between buttons
+    borderRadius: 10, // Rounded corners for button container
+    //overflow: "hidden", // Ensure border radius applies to Button
+    justifyContent: "center", // Center the buttons horizontally
+    alignItems: "center", // Center the buttons vertically
   },
 });
 

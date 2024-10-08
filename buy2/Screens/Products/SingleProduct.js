@@ -49,7 +49,7 @@ const SingleProduct = (props) => {
           <Button
             title="Add"
             onPress={() => {
-              props.addItemToCart(item),
+              props.addItemToCart(item.id),
                 Toast.show({
                   topOffset: 60,
                   type: "success",

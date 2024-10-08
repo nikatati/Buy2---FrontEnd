@@ -12,15 +12,17 @@
     "@expo/webpack-config": "~19.0.1",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/masked-view": "^0.1.11",
-    "@react-native-picker/picker": "^2.7.7",
+    "@react-native-picker/picker": "^2.8.1",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/material-top-tabs": "^6.6.14",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "axios": "^1.7.2",
     "expo": "^51.0.14",
+    "expo-image-picker": "~15.0.7",
     "expo-status-bar": "~1.12.1",
     "jwt-decode": "^4.0.0",
+    "mime": "^4.0.4",
     "native-base": "^3.4.28",
     "react": "18.2.0",
     "react-native": "^0.74.2",
@@ -35,7 +37,7 @@
     "react-native-swiper": "^1.6.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-toast-message": "^2.2.0",
-    "react-native-vector-icons": "^10.1.0",
+    "react-native-vector-icons": "^10.2.0",
     "react-native-web": "^0.19.12",
     "react-redux": "^9.1.2",
     "redux": "^4.1.2",
@@ -44,7 +46,8 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0"
+    "@babel/core": "^7.24.0",
+    "expo-module-scripts": "^3.5.2"
   },
   "private": true
 }

@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Button, StyleSheet } from "react-native";
 import { Container } from "native-base";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-community/async-storage";
-//import OrderCard from "../../Shared/OrderCard"
+import OrderCard from "../Shared/OrderCard";
 
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
